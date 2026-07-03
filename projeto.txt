@@ -1,0 +1,104 @@
+Projeto: Sistema de candidaturas com triagem por IA
+
+1 — Entender o Problema
+
+Quem vai usar? Pessoas buscando emprego que querem organizar suas candidaturas e receber feedback sobre adequação à vaga.
+Qual problema resolve? Candidatos se perdem controlando para quais vagas já aplicaram, em que status estão, e não sabem se o currículo combina com a vaga antes de aplicar.
+
+
+2 — Requisitos
+Requisitos funcionais:
+
+Cadastrar usuário: Sim
+Autentiar usuário: Não sei
+Cadastrar vagaEntity: Sim (empresa, cargo, descrição da vaga)
+Listar candidaturas com filtro por status: Sim
+Atualizar status da vagaEntity: Sim
+Gerar análise de aderência via IA (currículo x vaga): Sim
+
+Regras de negócio:
+
+Usuário só vê suas próprias candidaturas
+Status segue um fluxo: APLICADO → ENTREVISTA → TESTE_TECNICO → OFERTA → REJEITADO
+Não pode duplicar vagaEntity para mesma empresa + vaga
+
+
+3 — Descobrir os dados
+usuarioEntity                    vagaEntity                 perfil_profissional
+- id(pk)                   - id(pk)                    - id(pk)
+- nome                     - empresa                   - usuario_id (fk)
+- email                    - cargo                     - resumo_curriculo
+- senha                    - descricao_vaga (text)     - habilidades
+
+                           - status
+                           - data_aplicacao
+                           - analise_ia (text)
+                           - usuario_id (fk)
+
+
+4 — Modelar o banco
+usuarioEntity                          perfil_profissional
+id (pk)                          id (pk)
+nome                             usuario_id (fk)
+email                            resumo_curriculo (text)
+senha                            habilidades (text)
+
+vagaEntity
+id (pk)
+empresa
+cargo
+descricao_vaga (text)
+status
+data_aplicacao
+analise_ia (text)
+usuario_id (fk)
+
+
+5 — Pensar na API
+POST   /usuarios
+POST   /login
+POST   /perfil                          → cadastra/atualiza o resumo do currículo
+POST   /candidaturas
+GET    /candidaturas
+GET    /candidaturas?status=ENTREVISTA
+PATCH  /candidaturas/{id}/status
+POST   /candidaturas/{id}/analisar      → chama a IA
+DELETE /candidaturas/{id}
+
+
+6 — Arquitetura
+
+Autenticação? Sim — Spring Security + JWT
+E-mail? Não nessa versão (pode virar evolução futura)
+Fila? Não, IA é chamada de forma síncrona mesmo
+Microsserviços? Não — monólito, como o seu fluxograma recomenda
+IA isolada? Sim — GeminiService separado, chamado pelo CandidaturaService
+
+Fluxo do endpoint /analisar: busca o resumo_curriculo do perfil + descricao_vaga da vagaEntity → monta prompt → Gemini retorna pontos de aderência, lacunas e sugestões → salva em analise_ia.
+
+
+7 — Abrir o IntelliJ
+br.com.seunome.candidaturas
+├── controller
+│   ├── UsuarioController
+│   ├── AuthController
+│   ├── PerfilController
+│   └── CandidaturaController
+├── service
+│   ├── UsuarioService
+│   ├── CandidaturaService
+│   └── GeminiService
+├── repository
+│   ├── UsuarioRepository
+│   ├── PerfilRepository
+│   └── CandidaturaRepository
+├── model
+│   ├── Usuario
+│   ├── PerfilProfissional
+│   └── Candidatura
+├── dto
+│   ├── CandidaturaRequest
+│   ├── CandidaturaResponse
+│   └── AnaliseIAResponse
+└── config
+    └── SecurityConfig

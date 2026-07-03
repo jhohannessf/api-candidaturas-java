@@ -1,0 +1,42 @@
+package br.com.jhohannesfreitas.candidaturas.controller;
+
+import br.com.jhohannesfreitas.candidaturas.dto.*;
+import br.com.jhohannesfreitas.candidaturas.model.CandidaturaEntity;
+import br.com.jhohannesfreitas.candidaturas.model.UsuarioEntity;
+import br.com.jhohannesfreitas.candidaturas.service.UsuarioService;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/v1/usuarios")
+@Tag(name = "Usuários", description = "Endpoints relacionados aos usuários.")
+public class UsuarioController {
+
+    private final UsuarioService usuarioService;
+
+    public UsuarioController(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
+    }
+
+    @PreAuthorize("#usuarioId == authentication.principal.id or hasRole('ADMIN')") // A nível de método, estou definindo quem pode ver as candidaturas
+    @GetMapping("/{usuarioId}/candidaturas")
+    public ResponseEntity<List<CandidaturaEntity>> listarCandidaturasUsuario(@PathVariable Long usuarioId) {
+        return ResponseEntity.ok(usuarioService.listarCandidaturasUsuario(usuarioId));
+    }
+
+    @PostMapping("/inscrever")
+    public ResponseEntity<UsuarioResponseDTO> inscreverUsuarioEmVaga(@Valid @RequestBody InscricaoRequestDTO dto, Authentication authentication) {
+        UsuarioEntity usuarioLogado = (UsuarioEntity) authentication.getPrincipal();
+        UsuarioResponseDTO response = usuarioService.inscreverUsuarioEmVaga(
+                usuarioLogado.getEmail(),
+                dto.getVaga());
+        return ResponseEntity.ok(response);
+    }
+
+}

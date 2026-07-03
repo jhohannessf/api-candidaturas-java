@@ -1,0 +1,62 @@
+package br.com.jhohannesfreitas.candidaturas.service;
+
+import br.com.jhohannesfreitas.candidaturas.dto.VagaRequestDTO;
+import br.com.jhohannesfreitas.candidaturas.dto.VagaResponseDTO;
+import br.com.jhohannesfreitas.candidaturas.model.VagaEntity;
+import br.com.jhohannesfreitas.candidaturas.repository.IVagaRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+@RequiredArgsConstructor
+public class VagaService {
+
+    private final IVagaRepository vagaRepository;
+
+    // Criar vaga
+    public VagaResponseDTO criarVaga(VagaRequestDTO vaga) {
+
+        // Validar se a vaga já não existe
+        Optional<VagaEntity> vagaexiste = vagaRepository.findByEmpresaAndCargo(vaga.getEmpresa(), vaga.getCargo());
+        if (vagaexiste.isPresent()) {
+            throw new RuntimeException("Vaga já cadastrada");
+        } else {
+            VagaEntity vagaEntity = VagaEntity.builder()
+                    .empresa(vaga.getEmpresa())
+                    .cargo(vaga.getCargo())
+                    .build();
+
+            VagaEntity vagaSalva = vagaRepository.save(vagaEntity);
+
+            return new VagaResponseDTO(vagaSalva.getEmpresa(),vagaSalva.getCargo(),vagaSalva.getDescricaoVaga());
+        }
+
+    }
+
+    // Listar todas as vagas
+    public List<VagaResponseDTO> listarVagas() {
+        return vagaRepository.findAll()
+                .stream()
+                .map(vaga -> new VagaResponseDTO(vaga.getEmpresa(),vaga.getCargo(),vaga.getDescricaoVaga())) // Transformando minha VagaEntity em DTO
+                .toList();
+    }
+
+    // Buscar vaga por ID
+    public VagaResponseDTO buscaPorNomeEmpresa(String empresa) {
+        return vagaRepository.findByEmpresaContainingIgnoreCase(empresa)
+                .map(vaga -> new VagaResponseDTO(vaga.getEmpresa(),vaga.getCargo(),vaga.getDescricaoVaga()))
+                .orElseThrow(() -> new RuntimeException("Vaga não encontrada"));
+
+    }
+
+    // Buscar por empresa e cargo
+    public VagaEntity buscarPorEmpresaECargo(String empresa, String cargo) {
+        return vagaRepository.findByEmpresaAndCargo(empresa, cargo)
+                .orElseThrow(() ->
+                        new RuntimeException("Vaga não encontrada"));
+    }
+}
+
