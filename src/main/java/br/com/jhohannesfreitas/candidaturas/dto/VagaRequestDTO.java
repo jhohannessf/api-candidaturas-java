@@ -1,5 +1,8 @@
 package br.com.jhohannesfreitas.candidaturas.dto;
 
+import br.com.jhohannesfreitas.candidaturas.model.StatusCandidaturaEnum;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,4 +16,8 @@ public class VagaRequestDTO {
     private String cargo;
     @NotBlank
     private String descricaoVaga;
+
+    @Enumerated(EnumType.STRING)
+    private StatusCandidaturaEnum status;
+
 }

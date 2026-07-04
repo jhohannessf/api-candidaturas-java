@@ -42,5 +42,5 @@ server:
   port: 8080
 
 jwt:
-  expiration: ${JWT_EXPIRATION:900000} # 15 min
+  expiration: ${JWT_EXPIRATION:86400000} # 900000: 15 min
   key: ${JWT_KEY}

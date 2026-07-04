@@ -2,6 +2,7 @@ package br.com.jhohannesfreitas.candidaturas.service;
 
 import br.com.jhohannesfreitas.candidaturas.dto.VagaRequestDTO;
 import br.com.jhohannesfreitas.candidaturas.dto.VagaResponseDTO;
+import br.com.jhohannesfreitas.candidaturas.exception.NotFoundException;
 import br.com.jhohannesfreitas.candidaturas.model.VagaEntity;
 import br.com.jhohannesfreitas.candidaturas.repository.IVagaRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ public class VagaService {
 
             VagaEntity vagaSalva = vagaRepository.save(vagaEntity);
 
-            return new VagaResponseDTO(vagaSalva.getEmpresa(),vagaSalva.getCargo(),vagaSalva.getDescricaoVaga());
+            return new VagaResponseDTO(vagaSalva.getEmpresa(),vagaSalva.getCargo(),vagaSalva.getDescricaoVaga(),vagaSalva.getStatus());
         }
 
     }
@@ -40,15 +41,15 @@ public class VagaService {
     public List<VagaResponseDTO> listarVagas() {
         return vagaRepository.findAll()
                 .stream()
-                .map(vaga -> new VagaResponseDTO(vaga.getEmpresa(),vaga.getCargo(),vaga.getDescricaoVaga())) // Transformando minha VagaEntity em DTO
+                .map(vaga -> new VagaResponseDTO(vaga.getEmpresa(),vaga.getCargo(),vaga.getDescricaoVaga(),vaga.getStatus())) // Transformando minha VagaEntity em DTO
                 .toList();
     }
 
     // Buscar vaga por ID
     public VagaResponseDTO buscaPorNomeEmpresa(String empresa) {
         return vagaRepository.findByEmpresaContainingIgnoreCase(empresa)
-                .map(vaga -> new VagaResponseDTO(vaga.getEmpresa(),vaga.getCargo(),vaga.getDescricaoVaga()))
-                .orElseThrow(() -> new RuntimeException("Vaga não encontrada"));
+                .map(vaga -> new VagaResponseDTO(vaga.getEmpresa(),vaga.getCargo(),vaga.getDescricaoVaga(),vaga.getStatus()))
+                .orElseThrow(() -> new NotFoundException("Vaga não encontrada"));
 
     }
 
