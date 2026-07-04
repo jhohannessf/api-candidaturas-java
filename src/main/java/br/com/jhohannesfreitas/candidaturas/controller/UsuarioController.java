@@ -24,12 +24,8 @@ public class UsuarioController {
         this.usuarioService = usuarioService;
     }
 
-    @PreAuthorize("#usuarioId == authentication.principal.id or hasRole('ADMIN')") // A nível de método, estou definindo quem pode ver as candidaturas
-    @GetMapping("/{usuarioId}/candidaturas")
-    public ResponseEntity<List<CandidaturaEntity>> listarCandidaturasUsuario(@PathVariable Long usuarioId) {
-        return ResponseEntity.ok(usuarioService.listarCandidaturasUsuario(usuarioId));
-    }
-
+    // Definindo quem pode ver as candidaturas a nível de método
+    //@PreAuthorize("#usuarioId == authentication.principal.id or hasRole('ADMIN')")
     @PostMapping("/inscrever")
     public ResponseEntity<UsuarioResponseDTO> inscreverUsuarioEmVaga(@Valid @RequestBody InscricaoRequestDTO dto, Authentication authentication) {
         UsuarioEntity usuarioLogado = (UsuarioEntity) authentication.getPrincipal();

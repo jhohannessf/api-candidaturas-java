@@ -3,6 +3,7 @@ package br.com.jhohannesfreitas.candidaturas.service;
 import br.com.jhohannesfreitas.candidaturas.dto.VagaRequestDTO;
 import br.com.jhohannesfreitas.candidaturas.dto.UsuarioCreateDTO;
 import br.com.jhohannesfreitas.candidaturas.dto.UsuarioResponseDTO;
+import br.com.jhohannesfreitas.candidaturas.exception.NotFoundException;
 import br.com.jhohannesfreitas.candidaturas.model.CandidaturaEntity;
 import br.com.jhohannesfreitas.candidaturas.model.StatusCandidaturaEnum;
 import br.com.jhohannesfreitas.candidaturas.model.UsuarioEntity;
@@ -26,26 +27,6 @@ public class UsuarioService {
     private final ICandidaturaRepository candidaturaRepository;
 
     private final IVagaRepository vagaRepository;
-
-    @Transactional
-    public UsuarioResponseDTO cadastrarUsuario(UsuarioCreateDTO usuarioCreateDTO) {
-
-        validarEmailExistente(usuarioCreateDTO.getEmail());
-
-        UsuarioEntity usuario = UsuarioEntity.builder()
-                .nome(usuarioCreateDTO.getNome())
-                .email(usuarioCreateDTO.getEmail())
-                .senha(usuarioCreateDTO.getSenha())
-                .build();
-
-        UsuarioEntity usuarioSalvo =
-                usuarioRepository.save(usuario);
-
-        return new UsuarioResponseDTO(
-                usuarioSalvo.getNome(),
-                usuarioSalvo.getEmail()
-        );
-    }
 
     @Transactional
     public UsuarioResponseDTO inscreverUsuarioEmVaga(String emailUsuario, VagaRequestDTO vagaRequestDTO) {
@@ -76,23 +57,11 @@ public class UsuarioService {
         );
     }
 
-    public List<CandidaturaEntity> listarCandidaturasUsuario(Long usuarioId) {
-
-        UsuarioEntity usuario = usuarioRepository
-                .findById(usuarioId)
-                .orElseThrow(() ->
-                        new RuntimeException("Usuário não encontrado"));
-
-        List<CandidaturaEntity> candidaturas = candidaturaRepository.findByUsuario(usuario);
-
-        return candidaturas;
-    }
-
     private UsuarioEntity buscarUsuarioPorEmail(String email) {
 
         return usuarioRepository.findByEmail(email)
                 .orElseThrow(() ->
-                        new RuntimeException("Usuário não encontrado"));
+                        new NotFoundException("Usuário de e-mail: " + email + " não encontrado"));
     }
 
     private void validarEmailExistente(String email) {

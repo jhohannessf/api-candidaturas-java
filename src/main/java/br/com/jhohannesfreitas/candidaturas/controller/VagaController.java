@@ -31,11 +31,11 @@ public class VagaController {
         return ResponseEntity.ok(vagaService.buscaPorNomeEmpresa(empresa));
     }
 
+    //Coloquei mapping porque configurei este endpoint para apenas ADMIN cadastrarem vagas
     @PostMapping("/cadastrar")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<VagaResponseDTO> criar(@RequestBody VagaRequestDTO vaga) {
         return ResponseEntity.ok(vagaService.criarVaga(vaga));
     }
-
 
 }

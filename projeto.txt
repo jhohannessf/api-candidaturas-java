@@ -10,8 +10,8 @@ Qual problema resolve? Candidatos se perdem controlando para quais vagas já apl
 Requisitos funcionais:
 
 Cadastrar usuário: Sim
-Autentiar usuário: Não sei
-Cadastrar vagaEntity: Sim (empresa, cargo, descrição da vaga)
+Autentiar usuário: Sim
+Cadastrar vagaEntity (empresa, cargo, descrição da vaga) : Sim
 Listar candidaturas com filtro por status: Sim
 Atualizar status da vagaEntity: Sim
 Gerar análise de aderência via IA (currículo x vaga): Sim

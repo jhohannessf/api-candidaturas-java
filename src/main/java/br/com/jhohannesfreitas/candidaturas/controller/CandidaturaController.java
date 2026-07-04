@@ -1,11 +1,11 @@
 package br.com.jhohannesfreitas.candidaturas.controller;
 
-import br.com.jhohannesfreitas.candidaturas.dto.UsuarioResponseDTO;
-import br.com.jhohannesfreitas.candidaturas.dto.VagaResponseDTO;
+import br.com.jhohannesfreitas.candidaturas.dto.*;
 import br.com.jhohannesfreitas.candidaturas.model.UsuarioEntity;
 import br.com.jhohannesfreitas.candidaturas.service.CandidaturaService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -22,11 +22,24 @@ public class CandidaturaController {
 
     // Listar candidaturas do usuário logado
     @GetMapping
-    public ResponseEntity<List<VagaResponseDTO>> listarPorUsuario(Authentication authentication) {
+    public ResponseEntity<List<CandidaturaResponseDTO>> listarPorUsuario(Authentication authentication) {
         UsuarioEntity usuarioLogado = (UsuarioEntity) authentication.getPrincipal();
         return ResponseEntity.ok(
                 candidaturaService.obterCandidaturasPorEmail(usuarioLogado.getEmail())
         );
+    }
+
+    @GetMapping("/{status}")
+    public ResponseEntity<List<VagaResponseDTO>> listarPorStatus(@PathVariable String status, Authentication authentication) {
+        UsuarioEntity usuarioLogado = (UsuarioEntity) authentication.getPrincipal();
+        return ResponseEntity.ok(candidaturaService.obterCandidaturasPorStatus(status, usuarioLogado.getEmail()));
+    }
+
+    @PatchMapping
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<CandidaturaResponseDTO> alterarStatus(@RequestBody CandidaturaRequestDTO candidaturaRequestDTO, Authentication authentication) {
+        UsuarioEntity usuarioLogado = (UsuarioEntity) authentication.getPrincipal();
+        return ResponseEntity.ok(candidaturaService.alterarStatusCandidatura(candidaturaRequestDTO, authentication));
     }
 }
 
