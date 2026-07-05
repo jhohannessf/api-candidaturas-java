@@ -6,6 +6,7 @@ import br.com.jhohannesfreitas.candidaturas.model.UsuarioEntity;
 import br.com.jhohannesfreitas.candidaturas.service.UsuarioService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -15,14 +16,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/usuarios")
+@RequiredArgsConstructor
 @Tag(name = "Usuários", description = "Endpoints relacionados aos usuários.")
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
-
-    public UsuarioController(UsuarioService usuarioService) {
-        this.usuarioService = usuarioService;
-    }
 
     // Definindo quem pode ver as candidaturas a nível de método
     //@PreAuthorize("#usuarioId == authentication.principal.id or hasRole('ADMIN')")
