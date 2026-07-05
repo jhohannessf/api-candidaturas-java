@@ -31,7 +31,7 @@ public class UsuarioEntity implements UserDetails { //UserDetails: Um usuário a
     private List<CandidaturaEntity> candidaturas;
 
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
-    PerfilProfissionalEntity perfilProfissionalEntity;
+    PerfilEntity perfilEntity;
 
     @ManyToMany(fetch = FetchType.EAGER) // as roles serão carregadas automaticamente junto com o usuário
     @JoinTable(name = "usuarios_roles",

@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class PerfilProfissionalEntity {
+public class PerfilEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,7 +25,7 @@ public class PerfilProfissionalEntity {
     @JoinColumn(name = "usuario_id", unique = true)
     private UsuarioEntity usuario;
 
-    public PerfilProfissionalEntity(String resumoCurriculo, String habilidades, UsuarioEntity usuario) {
+    public PerfilEntity(String resumoCurriculo, String habilidades, UsuarioEntity usuario) {
         this.resumoCurriculo = resumoCurriculo;
         this.habilidades = habilidades;
         this.usuario = usuario;

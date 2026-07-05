@@ -20,22 +20,20 @@ public class VagaController {
     private final VagaService vagaService;
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.OK) // Pode fazer assim
     public ResponseEntity<List<VagaResponseDTO>> listar() {
         return ResponseEntity.ok(vagaService.listarVagas());
     }
 
     @GetMapping("/{empresa}")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<VagaResponseDTO> buscar(@PathVariable String empresa) {
         return ResponseEntity.ok(vagaService.buscaPorNomeEmpresa(empresa));
     }
 
     //Coloquei mapping porque configurei este endpoint para apenas ADMIN cadastrarem vagas
     @PostMapping("/cadastrar")
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<VagaResponseDTO> criar(@RequestBody VagaRequestDTO vaga) {
-        return ResponseEntity.ok(vagaService.criarVaga(vaga));
+        return ResponseEntity.status(HttpStatus.CREATED).body(vagaService.criarVaga(vaga)); // Ou pode fazer no return
     }
 
 }
