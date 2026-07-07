@@ -8,6 +8,7 @@ public record UsuarioResponse (
         String email
 ) {
 
+    // Mapper de saída: Transforma uma entidade em um DTO
     public static UsuarioResponse fromEntity(UsuarioEntity usuario) {
         return new UsuarioResponse(
                 usuario.getNome(),

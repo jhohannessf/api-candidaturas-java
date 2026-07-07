@@ -1,7 +1,7 @@
 package br.com.jhohannesfreitas.candidaturas.service;
 
 import br.com.jhohannesfreitas.candidaturas.dto.VagaRequest;
-import br.com.jhohannesfreitas.candidaturas.dto.VagaResponseDTO;
+import br.com.jhohannesfreitas.candidaturas.dto.VagaResponse;
 import br.com.jhohannesfreitas.candidaturas.exception.NotFoundException;
 import br.com.jhohannesfreitas.candidaturas.domain.model.VagaEntity;
 import br.com.jhohannesfreitas.candidaturas.repository.IVagaRepository;
@@ -18,7 +18,7 @@ public class VagaService {
     private final IVagaRepository vagaRepository;
 
     // Criar vaga
-    public VagaResponseDTO criarVaga(VagaRequest vaga) {
+    public VagaResponse criarVaga(VagaRequest vaga) {
 
         // Validar se a vaga já não existe
         Optional<VagaEntity> vagaexiste = vagaRepository.findByEmpresaAndCargo(vaga.empresa(), vaga.cargo());
@@ -32,23 +32,23 @@ public class VagaService {
 
             VagaEntity vagaSalva = vagaRepository.save(vagaEntity);
 
-            return new VagaResponseDTO(vagaSalva.getEmpresa(),vagaSalva.getCargo(),vagaSalva.getDescricaoVaga(),vagaSalva.getStatus());
+            return new VagaResponse(vagaSalva.getEmpresa(),vagaSalva.getCargo(),vagaSalva.getDescricaoVaga(),vagaSalva.getStatus());
         }
 
     }
 
     // Listar todas as vagas
-    public List<VagaResponseDTO> listarVagas() {
+    public List<VagaResponse> listarVagas() {
         return vagaRepository.findAll()
                 .stream()
-                .map(vaga -> new VagaResponseDTO(vaga.getEmpresa(),vaga.getCargo(),vaga.getDescricaoVaga(),vaga.getStatus())) // Transformando minha VagaEntity em DTO
+                .map(vaga -> new VagaResponse(vaga.getEmpresa(),vaga.getCargo(),vaga.getDescricaoVaga(),vaga.getStatus())) // Transformando minha VagaEntity em DTO
                 .toList();
     }
 
     // Buscar vaga por ID
-    public VagaResponseDTO buscaPorNomeEmpresa(String empresa) {
+    public VagaResponse buscaPorNomeEmpresa(String empresa) {
         return vagaRepository.findByEmpresaContainingIgnoreCase(empresa)
-                .map(vaga -> new VagaResponseDTO(vaga.getEmpresa(),vaga.getCargo(),vaga.getDescricaoVaga(),vaga.getStatus()))
+                .map(vaga -> new VagaResponse(vaga.getEmpresa(),vaga.getCargo(),vaga.getDescricaoVaga(),vaga.getStatus()))
                 .orElseThrow(() -> new NotFoundException("Vaga não encontrada"));
 
     }

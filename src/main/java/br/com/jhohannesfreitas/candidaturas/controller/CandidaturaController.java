@@ -2,7 +2,7 @@ package br.com.jhohannesfreitas.candidaturas.controller;
 
 import br.com.jhohannesfreitas.candidaturas.dto.CandidaturaRequestDTO;
 import br.com.jhohannesfreitas.candidaturas.dto.CandidaturaResponseDTO;
-import br.com.jhohannesfreitas.candidaturas.dto.VagaResponseDTO;
+import br.com.jhohannesfreitas.candidaturas.dto.VagaResponse;
 import br.com.jhohannesfreitas.candidaturas.domain.model.UsuarioEntity;
 import br.com.jhohannesfreitas.candidaturas.service.CandidaturaService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,7 +32,7 @@ public class CandidaturaController {
     }
 
     @GetMapping("/{status}")
-    public ResponseEntity<List<VagaResponseDTO>> listarPorStatus(@PathVariable String status, Authentication authentication) {
+    public ResponseEntity<List<VagaResponse>> listarPorStatus(@PathVariable String status, Authentication authentication) {
         UsuarioEntity usuarioLogado = (UsuarioEntity) authentication.getPrincipal();
         return ResponseEntity.ok(candidaturaService.obterCandidaturasPorStatus(status, usuarioLogado.getEmail()));
     }

@@ -2,7 +2,7 @@ package br.com.jhohannesfreitas.candidaturas.service;
 
 import br.com.jhohannesfreitas.candidaturas.dto.CandidaturaRequestDTO;
 import br.com.jhohannesfreitas.candidaturas.dto.CandidaturaResponseDTO;
-import br.com.jhohannesfreitas.candidaturas.dto.VagaResponseDTO;
+import br.com.jhohannesfreitas.candidaturas.dto.VagaResponse;
 import br.com.jhohannesfreitas.candidaturas.domain.model.CandidaturaEntity;
 import br.com.jhohannesfreitas.candidaturas.domain.model.UsuarioEntity;
 import br.com.jhohannesfreitas.candidaturas.domain.model.VagaEntity;
@@ -49,7 +49,7 @@ public class CandidaturaService {
         );
     }
 
-    public List<VagaResponseDTO> obterCandidaturasPorStatus(String status, String email) {
+    public List<VagaResponse> obterCandidaturasPorStatus(String status, String email) {
         // Pegar o status fornecido pelo usuário
         String stats = candidaturaRepository.findByStatus(status);
         if (stats == null) {
