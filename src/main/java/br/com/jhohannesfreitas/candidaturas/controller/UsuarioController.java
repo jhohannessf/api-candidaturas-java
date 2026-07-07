@@ -23,9 +23,7 @@ public class UsuarioController {
     //@PreAuthorize("#usuarioId == authentication.principal.id or hasRole('ADMIN')")
     @PostMapping("/inscrever")
     public ResponseEntity<UsuarioResponse> inscreverUsuarioEmVaga(@Valid @RequestBody InscricaoRequest dto, Authentication authentication) {
-        UsuarioEntity usuarioLogado = (UsuarioEntity) authentication.getPrincipal();
         UsuarioResponse response = usuarioService.inscreverUsuarioEmVaga(
-                usuarioLogado.getEmail(),
                 dto.vaga());
         return ResponseEntity.ok(response);
     }

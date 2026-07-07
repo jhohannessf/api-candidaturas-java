@@ -7,11 +7,13 @@ import br.com.jhohannesfreitas.candidaturas.domain.model.CandidaturaEntity;
 import br.com.jhohannesfreitas.candidaturas.domain.enums.StatusCandidaturaEnum;
 import br.com.jhohannesfreitas.candidaturas.domain.model.UsuarioEntity;
 import br.com.jhohannesfreitas.candidaturas.domain.model.VagaEntity;
+import br.com.jhohannesfreitas.candidaturas.mapper.UsuarioMapper;
 import br.com.jhohannesfreitas.candidaturas.repository.ICandidaturaRepository;
 import br.com.jhohannesfreitas.candidaturas.repository.IUsuarioRepository;
 import br.com.jhohannesfreitas.candidaturas.repository.IVagaRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,16 +22,21 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class UsuarioService {
 
+    private final UsuarioMapper usuarioMapper;
+
     private final IUsuarioRepository usuarioRepository;
+
+    private final AuthenticationService authenticationService;
 
     private final ICandidaturaRepository candidaturaRepository;
 
     private final IVagaRepository vagaRepository;
 
     @Transactional
-    public UsuarioResponse inscreverUsuarioEmVaga(String emailUsuario, VagaRequest vagaRequest) {
+    public UsuarioResponse inscreverUsuarioEmVaga(VagaRequest vagaRequest) {
 
-        UsuarioEntity usuario = buscarUsuarioPorEmail(emailUsuario);
+        // Buscar por usuário autenticado logado
+        UsuarioEntity usuario = authenticationService.getUsuarioAutenticado();
 
         VagaEntity vaga = vagaRepository
                 .findByEmpresaAndCargo(
@@ -49,7 +56,7 @@ public class UsuarioService {
 
         candidaturaRepository.save(candidatura);
 
-        return UsuarioResponse.fromEntity(usuario);
+        return usuarioMapper.toResponse(usuario);
     }
 
     private UsuarioEntity buscarUsuarioPorEmail(String email) {
