@@ -1,6 +1,6 @@
 package br.com.jhohannesfreitas.candidaturas.service;
 
-import br.com.jhohannesfreitas.candidaturas.dto.VagaRequestDTO;
+import br.com.jhohannesfreitas.candidaturas.dto.VagaRequest;
 import br.com.jhohannesfreitas.candidaturas.dto.UsuarioResponse;
 import br.com.jhohannesfreitas.candidaturas.exception.NotFoundException;
 import br.com.jhohannesfreitas.candidaturas.domain.model.CandidaturaEntity;
@@ -27,14 +27,14 @@ public class UsuarioService {
     private final IVagaRepository vagaRepository;
 
     @Transactional
-    public UsuarioResponse inscreverUsuarioEmVaga(String emailUsuario, VagaRequestDTO vagaRequestDTO) {
+    public UsuarioResponse inscreverUsuarioEmVaga(String emailUsuario, VagaRequest vagaRequest) {
 
         UsuarioEntity usuario = buscarUsuarioPorEmail(emailUsuario);
 
         VagaEntity vaga = vagaRepository
                 .findByEmpresaAndCargo(
-                        vagaRequestDTO.getEmpresa(),
-                        vagaRequestDTO.getCargo())
+                        vagaRequest.getEmpresa(),
+                        vagaRequest.getCargo())
                 .orElseThrow(() ->
                         new RuntimeException("Vaga não encontrada"));
 

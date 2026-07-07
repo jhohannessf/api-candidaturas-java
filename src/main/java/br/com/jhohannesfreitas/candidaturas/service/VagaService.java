@@ -1,6 +1,6 @@
 package br.com.jhohannesfreitas.candidaturas.service;
 
-import br.com.jhohannesfreitas.candidaturas.dto.VagaRequestDTO;
+import br.com.jhohannesfreitas.candidaturas.dto.VagaRequest;
 import br.com.jhohannesfreitas.candidaturas.dto.VagaResponseDTO;
 import br.com.jhohannesfreitas.candidaturas.exception.NotFoundException;
 import br.com.jhohannesfreitas.candidaturas.domain.model.VagaEntity;
@@ -18,7 +18,7 @@ public class VagaService {
     private final IVagaRepository vagaRepository;
 
     // Criar vaga
-    public VagaResponseDTO criarVaga(VagaRequestDTO vaga) {
+    public VagaResponseDTO criarVaga(VagaRequest vaga) {
 
         // Validar se a vaga já não existe
         Optional<VagaEntity> vagaexiste = vagaRepository.findByEmpresaAndCargo(vaga.getEmpresa(), vaga.getCargo());

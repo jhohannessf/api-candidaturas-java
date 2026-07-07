@@ -8,5 +8,5 @@ import lombok.Getter;
 public class InscricaoRequestDTO {
 //    @Valid
 //    private UsuarioResponseDTO usuario;
-    private VagaRequestDTO vaga;
+    private VagaRequest vaga;
 }

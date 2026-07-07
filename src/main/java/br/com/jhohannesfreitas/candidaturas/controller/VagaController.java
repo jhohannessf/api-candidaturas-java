@@ -1,6 +1,6 @@
 package br.com.jhohannesfreitas.candidaturas.controller;
 
-import br.com.jhohannesfreitas.candidaturas.dto.VagaRequestDTO;
+import br.com.jhohannesfreitas.candidaturas.dto.VagaRequest;
 import br.com.jhohannesfreitas.candidaturas.dto.VagaResponseDTO;
 import br.com.jhohannesfreitas.candidaturas.service.VagaService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,7 +32,7 @@ public class VagaController {
 
     //Coloquei mapping porque configurei este endpoint para apenas ADMIN cadastrarem vagas
     @PostMapping("/cadastrar")
-    public ResponseEntity<VagaResponseDTO> criar(@RequestBody VagaRequestDTO vaga) {
+    public ResponseEntity<VagaResponseDTO> criar(@RequestBody VagaRequest vaga) {
         return ResponseEntity.status(HttpStatus.CREATED).body(vagaService.criarVaga(vaga)); // Ou pode fazer no return
     }
 
