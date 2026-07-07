@@ -1,8 +1,8 @@
 package br.com.jhohannesfreitas.candidaturas.repository;
 
-import br.com.jhohannesfreitas.candidaturas.model.CandidaturaEntity;
-import br.com.jhohannesfreitas.candidaturas.model.UsuarioEntity;
-import br.com.jhohannesfreitas.candidaturas.model.VagaEntity;
+import br.com.jhohannesfreitas.candidaturas.domain.model.CandidaturaEntity;
+import br.com.jhohannesfreitas.candidaturas.domain.model.UsuarioEntity;
+import br.com.jhohannesfreitas.candidaturas.domain.model.VagaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

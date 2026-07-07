@@ -3,7 +3,7 @@ package br.com.jhohannesfreitas.candidaturas.service;
 import br.com.jhohannesfreitas.candidaturas.dto.VagaRequestDTO;
 import br.com.jhohannesfreitas.candidaturas.dto.VagaResponseDTO;
 import br.com.jhohannesfreitas.candidaturas.exception.NotFoundException;
-import br.com.jhohannesfreitas.candidaturas.model.VagaEntity;
+import br.com.jhohannesfreitas.candidaturas.domain.model.VagaEntity;
 import br.com.jhohannesfreitas.candidaturas.repository.IVagaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

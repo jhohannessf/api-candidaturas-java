@@ -1,7 +1,8 @@
 package br.com.jhohannesfreitas.candidaturas.controller;
 
-import br.com.jhohannesfreitas.candidaturas.dto.*;
-import br.com.jhohannesfreitas.candidaturas.model.UsuarioEntity;
+import br.com.jhohannesfreitas.candidaturas.dto.InscricaoRequestDTO;
+import br.com.jhohannesfreitas.candidaturas.dto.UsuarioResponse;
+import br.com.jhohannesfreitas.candidaturas.domain.model.UsuarioEntity;
 import br.com.jhohannesfreitas.candidaturas.service.UsuarioService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

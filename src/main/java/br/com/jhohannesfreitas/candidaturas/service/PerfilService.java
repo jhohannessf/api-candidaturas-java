@@ -2,8 +2,8 @@ package br.com.jhohannesfreitas.candidaturas.service;
 
 import br.com.jhohannesfreitas.candidaturas.dto.PerfilRequestDTO;
 import br.com.jhohannesfreitas.candidaturas.dto.PerfilResponseDTO;
-import br.com.jhohannesfreitas.candidaturas.model.PerfilEntity;
-import br.com.jhohannesfreitas.candidaturas.model.UsuarioEntity;
+import br.com.jhohannesfreitas.candidaturas.domain.model.PerfilEntity;
+import br.com.jhohannesfreitas.candidaturas.domain.model.UsuarioEntity;
 import br.com.jhohannesfreitas.candidaturas.repository.IPerfilRepository;
 import br.com.jhohannesfreitas.candidaturas.repository.IUsuarioRepository;
 import lombok.RequiredArgsConstructor;

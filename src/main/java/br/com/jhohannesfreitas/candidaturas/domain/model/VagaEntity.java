@@ -1,5 +1,6 @@
-package br.com.jhohannesfreitas.candidaturas.model;
+package br.com.jhohannesfreitas.candidaturas.domain.model;
 
+import br.com.jhohannesfreitas.candidaturas.domain.enums.StatusCandidaturaEnum;
 import jakarta.persistence.*;
 import lombok.*;
 

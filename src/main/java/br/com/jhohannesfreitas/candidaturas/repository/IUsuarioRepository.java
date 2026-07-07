@@ -1,6 +1,6 @@
 package br.com.jhohannesfreitas.candidaturas.repository;
 
-import br.com.jhohannesfreitas.candidaturas.model.UsuarioEntity;
+import br.com.jhohannesfreitas.candidaturas.domain.model.UsuarioEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

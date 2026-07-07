@@ -1,4 +1,4 @@
-package br.com.jhohannesfreitas.candidaturas.model;
+package br.com.jhohannesfreitas.candidaturas.domain.enums;
 
 public enum StatusCandidaturaEnum {
     APLICADO,

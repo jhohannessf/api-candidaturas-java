@@ -1,7 +1,9 @@
 package br.com.jhohannesfreitas.candidaturas.controller;
 
-import br.com.jhohannesfreitas.candidaturas.dto.*;
-import br.com.jhohannesfreitas.candidaturas.model.UsuarioEntity;
+import br.com.jhohannesfreitas.candidaturas.dto.CandidaturaRequestDTO;
+import br.com.jhohannesfreitas.candidaturas.dto.CandidaturaResponseDTO;
+import br.com.jhohannesfreitas.candidaturas.dto.VagaResponseDTO;
+import br.com.jhohannesfreitas.candidaturas.domain.model.UsuarioEntity;
 import br.com.jhohannesfreitas.candidaturas.service.CandidaturaService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

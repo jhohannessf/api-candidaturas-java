@@ -1,6 +1,6 @@
 package br.com.jhohannesfreitas.candidaturas.service;
 
-import br.com.jhohannesfreitas.candidaturas.model.VagaEntity;
+import br.com.jhohannesfreitas.candidaturas.domain.model.VagaEntity;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
 

@@ -1,6 +1,6 @@
 package br.com.jhohannesfreitas.candidaturas.dto;
 
-import br.com.jhohannesfreitas.candidaturas.model.UsuarioEntity;
+import br.com.jhohannesfreitas.candidaturas.domain.model.UsuarioEntity;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 

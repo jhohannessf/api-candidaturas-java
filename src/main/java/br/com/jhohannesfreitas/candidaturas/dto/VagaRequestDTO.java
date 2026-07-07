@@ -1,6 +1,6 @@
 package br.com.jhohannesfreitas.candidaturas.dto;
 
-import br.com.jhohannesfreitas.candidaturas.model.StatusCandidaturaEnum;
+import br.com.jhohannesfreitas.candidaturas.domain.enums.StatusCandidaturaEnum;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;

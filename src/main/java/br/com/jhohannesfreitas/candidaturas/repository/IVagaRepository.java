@@ -1,6 +1,6 @@
 package br.com.jhohannesfreitas.candidaturas.repository;
 
-import br.com.jhohannesfreitas.candidaturas.model.VagaEntity;
+import br.com.jhohannesfreitas.candidaturas.domain.model.VagaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
