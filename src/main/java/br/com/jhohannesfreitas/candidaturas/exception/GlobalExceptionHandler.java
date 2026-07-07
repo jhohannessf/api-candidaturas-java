@@ -1,22 +1,18 @@
-package br.com.jhohannesfreitas.candidaturas.handler;
+package br.com.jhohannesfreitas.candidaturas.exception;
 
-import br.com.jhohannesfreitas.candidaturas.dto.ErrorResponseDTO;
-import br.com.jhohannesfreitas.candidaturas.exception.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.NoSuchElementException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ErrorResponseDTO> handleNotFoundException(NotFoundException ex) {
-        ErrorResponseDTO response = ErrorResponseDTO.builder()
+    public ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException ex) {
+        ErrorResponse response = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.NOT_FOUND.value())
                 .error("Recurso não encontrado")
@@ -26,8 +22,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ErrorResponseDTO> handleAccessDeniedException(AccessDeniedException ex) {
-        ErrorResponseDTO response = ErrorResponseDTO.builder()
+    public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException ex) {
+        ErrorResponse response = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.FORBIDDEN.value())
                 .error("Recurso não autorizado")
@@ -37,8 +33,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponseDTO> handleException(Exception ex) {
-        ErrorResponseDTO response = ErrorResponseDTO.builder()
+    public ResponseEntity<ErrorResponse> handleException(Exception ex) {
+        ErrorResponse response = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .error("Erro interno do servidor")

@@ -1,15 +1,16 @@
-package br.com.jhohannesfreitas.candidaturas.dto;
+package br.com.jhohannesfreitas.candidaturas.exception;
 
 import lombok.Builder;
-import lombok.Getter;
 
 import java.time.LocalDateTime;
 
-@Getter
 @Builder
-public class ErrorResponseDTO {
-    private String message;
-    private int status;
-    private LocalDateTime timestamp;
-    private String error;
+public record ErrorResponse(
+        String message,
+        int status,
+        LocalDateTime timestamp,
+        String error
+
+) {
 }
+
