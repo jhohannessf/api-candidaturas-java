@@ -1,18 +1,14 @@
 package br.com.jhohannesfreitas.candidaturas.controller;
 
 import br.com.jhohannesfreitas.candidaturas.dto.*;
-import br.com.jhohannesfreitas.candidaturas.model.CandidaturaEntity;
 import br.com.jhohannesfreitas.candidaturas.model.UsuarioEntity;
 import br.com.jhohannesfreitas.candidaturas.service.UsuarioService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/usuarios")
@@ -25,9 +21,9 @@ public class UsuarioController {
     // Definindo quem pode ver as candidaturas a nível de método
     //@PreAuthorize("#usuarioId == authentication.principal.id or hasRole('ADMIN')")
     @PostMapping("/inscrever")
-    public ResponseEntity<UsuarioResponseDTO> inscreverUsuarioEmVaga(@Valid @RequestBody InscricaoRequestDTO dto, Authentication authentication) {
+    public ResponseEntity<UsuarioResponse> inscreverUsuarioEmVaga(@Valid @RequestBody InscricaoRequestDTO dto, Authentication authentication) {
         UsuarioEntity usuarioLogado = (UsuarioEntity) authentication.getPrincipal();
-        UsuarioResponseDTO response = usuarioService.inscreverUsuarioEmVaga(
+        UsuarioResponse response = usuarioService.inscreverUsuarioEmVaga(
                 usuarioLogado.getEmail(),
                 dto.getVaga());
         return ResponseEntity.ok(response);
