@@ -21,13 +21,13 @@ public class VagaService {
     public VagaResponseDTO criarVaga(VagaRequest vaga) {
 
         // Validar se a vaga já não existe
-        Optional<VagaEntity> vagaexiste = vagaRepository.findByEmpresaAndCargo(vaga.getEmpresa(), vaga.getCargo());
+        Optional<VagaEntity> vagaexiste = vagaRepository.findByEmpresaAndCargo(vaga.empresa(), vaga.cargo());
         if (vagaexiste.isPresent()) {
             throw new RuntimeException("Vaga já cadastrada");
         } else {
             VagaEntity vagaEntity = VagaEntity.builder()
-                    .empresa(vaga.getEmpresa())
-                    .cargo(vaga.getCargo())
+                    .empresa(vaga.empresa())
+                    .cargo(vaga.cargo())
                     .build();
 
             VagaEntity vagaSalva = vagaRepository.save(vagaEntity);

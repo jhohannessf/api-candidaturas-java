@@ -33,8 +33,8 @@ public class UsuarioService {
 
         VagaEntity vaga = vagaRepository
                 .findByEmpresaAndCargo(
-                        vagaRequest.getEmpresa(),
-                        vagaRequest.getCargo())
+                        vagaRequest.empresa(),
+                        vagaRequest.cargo())
                 .orElseThrow(() ->
                         new RuntimeException("Vaga não encontrada"));
 
