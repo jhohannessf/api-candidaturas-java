@@ -10,9 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 @Builder
-public class RegisterRequestDTO {
-    @NotBlank(message = "nome obrigatório")
-    private String nome;
+public class LoginRequest {
     @NotBlank(message = "E-mail obrigatório")
     @Email(message = "E-mail inválido!")
     private String email;

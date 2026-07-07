@@ -1,9 +1,9 @@
 package br.com.jhohannesfreitas.candidaturas.service;
 
 import br.com.jhohannesfreitas.candidaturas.config.TokenProvider;
-import br.com.jhohannesfreitas.candidaturas.dto.LoginRequestDTO;
-import br.com.jhohannesfreitas.candidaturas.dto.RegisterRequestDTO;
-import br.com.jhohannesfreitas.candidaturas.dto.TokenResponseDTO;
+import br.com.jhohannesfreitas.candidaturas.dto.LoginRequest;
+import br.com.jhohannesfreitas.candidaturas.dto.RegisterRequest;
+import br.com.jhohannesfreitas.candidaturas.dto.TokenResponse;
 import br.com.jhohannesfreitas.candidaturas.domain.enums.RoleTypeEnum;
 import br.com.jhohannesfreitas.candidaturas.domain.model.RolesEntity;
 import br.com.jhohannesfreitas.candidaturas.domain.model.UsuarioEntity;
@@ -34,7 +34,7 @@ public class AuthenticationService {
     @Value("${jwt.expiration}")
     private long expirationTime;
 
-    public void register(RegisterRequestDTO dto) throws BadRequestException {
+    public void register(RegisterRequest dto) throws BadRequestException {
         UsuarioEntity usuarioEntity = usuarioRepository.findByEmail(dto.getEmail())
                 .orElse(null);
         if (usuarioEntity != null) {
@@ -55,12 +55,12 @@ public class AuthenticationService {
 
     }
 
-    public TokenResponseDTO login(LoginRequestDTO dto) throws BadRequestException {
+    public TokenResponse login(LoginRequest dto) throws BadRequestException {
         try {
             // Authentication provider -> userDetailsService -> passwordEncoder.matches() -> Usuário Autenticado
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getSenha()));
             String token = tokenProvider.gerarToken(authentication);
-            return new TokenResponseDTO(token, expirationTime);
+            return new TokenResponse(token, expirationTime);
         } catch (BadCredentialsException e) {
             throw new BadRequestException("Credenciais inválidas");
         }
