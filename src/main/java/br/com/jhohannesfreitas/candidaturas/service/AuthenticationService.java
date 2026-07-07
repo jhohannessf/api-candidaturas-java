@@ -16,6 +16,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -43,8 +44,8 @@ public class AuthenticationService {
 
         RolesEntity role = rolesRepository.findByNome(RoleTypeEnum.ROLE_USUARIO.name())
                 .orElseGet(() -> rolesRepository.save(RolesEntity.builder()
-                                .nome(RoleTypeEnum.ROLE_USUARIO.name())
-                                .build()));
+                        .nome(RoleTypeEnum.ROLE_USUARIO.name())
+                        .build()));
 
         usuarioRepository.save(UsuarioEntity.builder()
                 .nome(dto.getNome())
@@ -65,4 +66,14 @@ public class AuthenticationService {
             throw new BadRequestException("Credenciais inválidas");
         }
     }
+
+    // Busca por usuário logado
+    public UsuarioEntity getUsuarioAutenticado() {
+        return (UsuarioEntity) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
+    }
 }
+
+
