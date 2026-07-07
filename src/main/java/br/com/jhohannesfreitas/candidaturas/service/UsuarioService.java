@@ -1,8 +1,7 @@
 package br.com.jhohannesfreitas.candidaturas.service;
 
 import br.com.jhohannesfreitas.candidaturas.dto.VagaRequestDTO;
-import br.com.jhohannesfreitas.candidaturas.dto.UsuarioCreateDTO;
-import br.com.jhohannesfreitas.candidaturas.dto.UsuarioResponseDTO;
+import br.com.jhohannesfreitas.candidaturas.dto.UsuarioResponse;
 import br.com.jhohannesfreitas.candidaturas.exception.NotFoundException;
 import br.com.jhohannesfreitas.candidaturas.model.CandidaturaEntity;
 import br.com.jhohannesfreitas.candidaturas.model.StatusCandidaturaEnum;
@@ -16,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +27,7 @@ public class UsuarioService {
     private final IVagaRepository vagaRepository;
 
     @Transactional
-    public UsuarioResponseDTO inscreverUsuarioEmVaga(String emailUsuario, VagaRequestDTO vagaRequestDTO) {
+    public UsuarioResponse inscreverUsuarioEmVaga(String emailUsuario, VagaRequestDTO vagaRequestDTO) {
 
         UsuarioEntity usuario = buscarUsuarioPorEmail(emailUsuario);
 
@@ -51,7 +49,7 @@ public class UsuarioService {
 
         candidaturaRepository.save(candidatura);
 
-        return new UsuarioResponseDTO(
+        return new UsuarioResponse(
                 usuario.getNome(),
                 usuario.getEmail()
         );
