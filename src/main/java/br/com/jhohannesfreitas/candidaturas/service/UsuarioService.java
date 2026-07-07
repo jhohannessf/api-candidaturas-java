@@ -49,10 +49,7 @@ public class UsuarioService {
 
         candidaturaRepository.save(candidatura);
 
-        return new UsuarioResponse(
-                usuario.getNome(),
-                usuario.getEmail()
-        );
+        return UsuarioResponse.fromEntity(usuario);
     }
 
     private UsuarioEntity buscarUsuarioPorEmail(String email) {

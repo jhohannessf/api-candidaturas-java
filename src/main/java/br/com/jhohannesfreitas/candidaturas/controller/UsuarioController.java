@@ -1,6 +1,6 @@
 package br.com.jhohannesfreitas.candidaturas.controller;
 
-import br.com.jhohannesfreitas.candidaturas.dto.InscricaoRequestDTO;
+import br.com.jhohannesfreitas.candidaturas.dto.InscricaoRequest;
 import br.com.jhohannesfreitas.candidaturas.dto.UsuarioResponse;
 import br.com.jhohannesfreitas.candidaturas.domain.model.UsuarioEntity;
 import br.com.jhohannesfreitas.candidaturas.service.UsuarioService;
@@ -22,11 +22,11 @@ public class UsuarioController {
     // Definindo quem pode ver as candidaturas a nível de método
     //@PreAuthorize("#usuarioId == authentication.principal.id or hasRole('ADMIN')")
     @PostMapping("/inscrever")
-    public ResponseEntity<UsuarioResponse> inscreverUsuarioEmVaga(@Valid @RequestBody InscricaoRequestDTO dto, Authentication authentication) {
+    public ResponseEntity<UsuarioResponse> inscreverUsuarioEmVaga(@Valid @RequestBody InscricaoRequest dto, Authentication authentication) {
         UsuarioEntity usuarioLogado = (UsuarioEntity) authentication.getPrincipal();
         UsuarioResponse response = usuarioService.inscreverUsuarioEmVaga(
                 usuarioLogado.getEmail(),
-                dto.getVaga());
+                dto.vaga());
         return ResponseEntity.ok(response);
     }
 
