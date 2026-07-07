@@ -3,6 +3,7 @@ package br.com.jhohannesfreitas.candidaturas.controller;
 import br.com.jhohannesfreitas.candidaturas.dto.PerfilRequestDTO;
 import br.com.jhohannesfreitas.candidaturas.dto.PerfilResponseDTO;
 import br.com.jhohannesfreitas.candidaturas.service.PerfilService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("api/v1/perfil")
 @RequiredArgsConstructor
+@Tag(name = "Perfil", description = "Endpoints relacionados ao perfil de usuário.")
 public class PerfilController {
 
     private final PerfilService perfilService;
