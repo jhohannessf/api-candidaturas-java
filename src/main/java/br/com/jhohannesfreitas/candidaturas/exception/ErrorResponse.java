@@ -6,10 +6,10 @@ import java.time.LocalDateTime;
 
 @Builder
 public record ErrorResponse(
-        String message,
         int status,
-        LocalDateTime timestamp,
-        String error
+        String error,
+        String message,
+        LocalDateTime timestamp
 
 ) {
 }

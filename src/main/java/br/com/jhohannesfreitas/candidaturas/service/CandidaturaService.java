@@ -1,11 +1,15 @@
 package br.com.jhohannesfreitas.candidaturas.service;
 
-import br.com.jhohannesfreitas.candidaturas.dto.CandidaturaRequestDTO;
-import br.com.jhohannesfreitas.candidaturas.dto.CandidaturaResponseDTO;
+import br.com.jhohannesfreitas.candidaturas.domain.enums.StatusCandidaturaEnum;
+import br.com.jhohannesfreitas.candidaturas.dto.AlterarStatusCandidaturaRequest;
+import br.com.jhohannesfreitas.candidaturas.dto.CandidaturaRequest;
+import br.com.jhohannesfreitas.candidaturas.dto.CandidaturaResponse;
 import br.com.jhohannesfreitas.candidaturas.dto.VagaResponse;
 import br.com.jhohannesfreitas.candidaturas.domain.model.CandidaturaEntity;
 import br.com.jhohannesfreitas.candidaturas.domain.model.UsuarioEntity;
 import br.com.jhohannesfreitas.candidaturas.domain.model.VagaEntity;
+import br.com.jhohannesfreitas.candidaturas.exception.RegraNegocioException;
+import br.com.jhohannesfreitas.candidaturas.mapper.CandidaturaMapper;
 import br.com.jhohannesfreitas.candidaturas.repository.ICandidaturaRepository;
 import br.com.jhohannesfreitas.candidaturas.repository.IUsuarioRepository;
 import br.com.jhohannesfreitas.candidaturas.repository.IVagaRepository;
@@ -25,7 +29,10 @@ public class CandidaturaService {
     private final ICandidaturaRepository candidaturaRepository;
     private final IVagaRepository vagaRepository;
 
-    public List<CandidaturaResponseDTO> obterCandidaturasPorEmail(String email) {
+    private final CandidaturaMapper candidaturaMapper;
+    private final AuthenticationService authenticationService;
+
+    public List<CandidaturaResponse> obterCandidaturasPorEmail(String email) {
 
         UsuarioEntity usuario = usuarioRepository.findByEmail(email)
                 .orElseThrow(() ->
@@ -33,61 +40,64 @@ public class CandidaturaService {
 
         return candidaturaRepository.findByUsuario(usuario)
                 .stream()
-                .map(this::toDTO) // Converte para o método toDTO
+                .map(candidaturaMapper::toResponse) // Converte para o método toResponse do Mapper
                 .toList();
 
     }
 
-    private CandidaturaResponseDTO toDTO(CandidaturaEntity candidatura) {
+    public List<CandidaturaResponse> obterCandidaturasPorStatus(StatusCandidaturaEnum status) {
 
-        VagaEntity vaga = candidatura.getVaga();
+        // Buscar por usuário autenticado logado
+        UsuarioEntity usuarioLogado = authenticationService.getUsuarioAutenticado();
 
-        return new CandidaturaResponseDTO(
-                candidatura.getId(),
-                candidatura.getStatus(),
-                candidatura.getDataAplicacao()
-        );
-    }
-
-    public List<VagaResponse> obterCandidaturasPorStatus(String status, String email) {
-        // Pegar o status fornecido pelo usuário
-        String stats = candidaturaRepository.findByStatus(status);
-        if (stats == null) {
-            throw new RuntimeException("Status não encontrado");
-        }
-
-        // Pegar o e-mail
-        UsuarioEntity usuario = usuarioRepository.findByEmail(email)
-                .orElseThrow(() ->
-                        new RuntimeException("Usuário não encontrado"));
-
-        return obterCandidaturasPorStatus(stats, email);
+        return candidaturaRepository.findByUsuarioAndStatus(usuarioLogado, status)
+                .stream()
+                .map(candidaturaMapper::toResponse)
+                .toList();
     }
 
     @Transactional
-    public CandidaturaResponseDTO alterarStatusCandidatura(CandidaturaRequestDTO candidaturaRequestDTO, Authentication authentication) {
+    public CandidaturaResponse alterarStatusCandidatura(AlterarStatusCandidaturaRequest alterarStatusCandidaturaRequest, Authentication authentication) {
         // Pegar usuário autenticado
         UsuarioEntity usuarioLogado = (UsuarioEntity) authentication.getPrincipal();
 
+        Long id = alterarStatusCandidaturaRequest.candidaturaId();
+
         // Busca a candidatura
-        CandidaturaEntity candidatura = candidaturaRepository.findById(candidaturaRequestDTO.getId())
-                .orElseThrow(() -> new RuntimeException("Candidatura inexistente"));
+        CandidaturaEntity candidatura = candidaturaRepository.findById(alterarStatusCandidaturaRequest.candidaturaId())
+                .orElseThrow(() -> new RegraNegocioException("Candidatura inexistente"));
 
         // Buscar a vaga
         VagaEntity vaga = candidatura.getVaga();
 
         // Altera o Status apenas das vagas que o usario_id seja o mesmo do usuário logado
         if (candidatura.getUsuario().getId().equals(usuarioLogado.getId())) {
-            candidatura.setStatus(candidaturaRequestDTO.getStatus());
-        }else {
+            candidatura.setStatus(alterarStatusCandidaturaRequest.status());
+        } else {
             throw new AccessDeniedException("Usuário não autorizado para alterar o candidatura de outro usuário");
         }
 
         // Salva a alteração
         candidaturaRepository.save(candidatura);
 
-        return toDTO(candidatura);
+        return candidaturaMapper.toResponse(candidatura);
 
     }
+
+    // Validar candidatura existente
+    public void validarCandidaturaExistente(UsuarioEntity usuario, VagaEntity vaga) {
+
+        boolean candidatado =
+                candidaturaRepository.existsByUsuarioAndVaga(
+                        usuario,
+                        vaga);
+
+        if (candidatado) {
+            throw new RegraNegocioException(
+                    "Usuário já se candidatou para esta vaga");
+        }
+    }
+
+
 }
 

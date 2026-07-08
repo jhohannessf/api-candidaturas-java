@@ -2,7 +2,7 @@ package br.com.jhohannesfreitas.candidaturas.service;
 
 import br.com.jhohannesfreitas.candidaturas.dto.VagaRequest;
 import br.com.jhohannesfreitas.candidaturas.dto.VagaResponse;
-import br.com.jhohannesfreitas.candidaturas.exception.NotFoundException;
+import br.com.jhohannesfreitas.candidaturas.exception.RegraNegocioException;
 import br.com.jhohannesfreitas.candidaturas.domain.model.VagaEntity;
 import br.com.jhohannesfreitas.candidaturas.repository.IVagaRepository;
 import lombok.RequiredArgsConstructor;
@@ -49,7 +49,7 @@ public class VagaService {
     public VagaResponse buscaPorNomeEmpresa(String empresa) {
         return vagaRepository.findByEmpresaContainingIgnoreCase(empresa)
                 .map(vaga -> new VagaResponse(vaga.getEmpresa(),vaga.getCargo(),vaga.getDescricaoVaga(),vaga.getStatus()))
-                .orElseThrow(() -> new NotFoundException("Vaga não encontrada"));
+                .orElseThrow(() -> new RegraNegocioException("Vaga não encontrada"));
 
     }
 
@@ -57,7 +57,7 @@ public class VagaService {
     public VagaEntity buscarPorEmpresaECargo(String empresa, String cargo) {
         return vagaRepository.findByEmpresaAndCargo(empresa, cargo)
                 .orElseThrow(() ->
-                        new RuntimeException("Vaga não encontrada"));
+                        new RegraNegocioException("Vaga não encontrada"));
     }
 }
 

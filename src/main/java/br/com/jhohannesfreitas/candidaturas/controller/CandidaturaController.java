@@ -1,7 +1,9 @@
 package br.com.jhohannesfreitas.candidaturas.controller;
 
-import br.com.jhohannesfreitas.candidaturas.dto.CandidaturaRequestDTO;
-import br.com.jhohannesfreitas.candidaturas.dto.CandidaturaResponseDTO;
+import br.com.jhohannesfreitas.candidaturas.domain.enums.StatusCandidaturaEnum;
+import br.com.jhohannesfreitas.candidaturas.dto.AlterarStatusCandidaturaRequest;
+import br.com.jhohannesfreitas.candidaturas.dto.CandidaturaRequest;
+import br.com.jhohannesfreitas.candidaturas.dto.CandidaturaResponse;
 import br.com.jhohannesfreitas.candidaturas.dto.VagaResponse;
 import br.com.jhohannesfreitas.candidaturas.domain.model.UsuarioEntity;
 import br.com.jhohannesfreitas.candidaturas.service.CandidaturaService;
@@ -24,7 +26,7 @@ public class CandidaturaController {
 
     // Listar candidaturas do usuário logado
     @GetMapping
-    public ResponseEntity<List<CandidaturaResponseDTO>> listarPorUsuario(Authentication authentication) {
+    public ResponseEntity<List<CandidaturaResponse>> listarPorUsuario(Authentication authentication) {
         UsuarioEntity usuarioLogado = (UsuarioEntity) authentication.getPrincipal();
         return ResponseEntity.ok(
                 candidaturaService.obterCandidaturasPorEmail(usuarioLogado.getEmail())
@@ -32,16 +34,13 @@ public class CandidaturaController {
     }
 
     @GetMapping("/{status}")
-    public ResponseEntity<List<VagaResponse>> listarPorStatus(@PathVariable String status, Authentication authentication) {
-        UsuarioEntity usuarioLogado = (UsuarioEntity) authentication.getPrincipal();
-        return ResponseEntity.ok(candidaturaService.obterCandidaturasPorStatus(status, usuarioLogado.getEmail()));
+    public ResponseEntity<List<CandidaturaResponse>> listarPorStatus(@PathVariable StatusCandidaturaEnum status) {
+        return ResponseEntity.ok(candidaturaService.obterCandidaturasPorStatus(status));
     }
 
     @PatchMapping
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<CandidaturaResponseDTO> alterarStatus(@RequestBody CandidaturaRequestDTO candidaturaRequestDTO, Authentication authentication) {
-        UsuarioEntity usuarioLogado = (UsuarioEntity) authentication.getPrincipal();
-        return ResponseEntity.ok(candidaturaService.alterarStatusCandidatura(candidaturaRequestDTO, authentication));
+    public ResponseEntity<CandidaturaResponse> alterarStatus(@RequestBody AlterarStatusCandidaturaRequest alterarStatusCandidaturaRequest, Authentication authentication) {
+        return ResponseEntity.ok(candidaturaService.alterarStatusCandidatura(alterarStatusCandidaturaRequest, authentication));
     }
 }
 

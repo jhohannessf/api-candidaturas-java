@@ -6,7 +6,7 @@ import jakarta.persistence.Enumerated;
 
 import java.time.LocalDate;
 
-public record CandidaturaResponseDTO(
+public record CandidaturaResponse(
         Long id,
 
         @Enumerated(EnumType.STRING)

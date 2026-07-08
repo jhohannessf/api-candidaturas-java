@@ -1,19 +1,18 @@
 package br.com.jhohannesfreitas.candidaturas.service;
 
-import br.com.jhohannesfreitas.candidaturas.dto.VagaRequest;
-import br.com.jhohannesfreitas.candidaturas.dto.UsuarioResponse;
-import br.com.jhohannesfreitas.candidaturas.exception.NotFoundException;
-import br.com.jhohannesfreitas.candidaturas.domain.model.CandidaturaEntity;
 import br.com.jhohannesfreitas.candidaturas.domain.enums.StatusCandidaturaEnum;
+import br.com.jhohannesfreitas.candidaturas.domain.model.CandidaturaEntity;
 import br.com.jhohannesfreitas.candidaturas.domain.model.UsuarioEntity;
 import br.com.jhohannesfreitas.candidaturas.domain.model.VagaEntity;
+import br.com.jhohannesfreitas.candidaturas.dto.UsuarioResponse;
+import br.com.jhohannesfreitas.candidaturas.dto.VagaRequest;
+import br.com.jhohannesfreitas.candidaturas.exception.RegraNegocioException;
 import br.com.jhohannesfreitas.candidaturas.mapper.UsuarioMapper;
 import br.com.jhohannesfreitas.candidaturas.repository.ICandidaturaRepository;
 import br.com.jhohannesfreitas.candidaturas.repository.IUsuarioRepository;
 import br.com.jhohannesfreitas.candidaturas.repository.IVagaRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -32,20 +31,21 @@ public class UsuarioService {
 
     private final IVagaRepository vagaRepository;
 
+    private final VagaService vagaService;
+
+    private final CandidaturaService candidaturaService;
+
     @Transactional
     public UsuarioResponse inscreverUsuarioEmVaga(VagaRequest vagaRequest) {
 
         // Buscar por usuário autenticado logado
         UsuarioEntity usuario = authenticationService.getUsuarioAutenticado();
 
-        VagaEntity vaga = vagaRepository
-                .findByEmpresaAndCargo(
-                        vagaRequest.empresa(),
-                        vagaRequest.cargo())
-                .orElseThrow(() ->
-                        new RuntimeException("Vaga não encontrada"));
+        // Busca a vaga pela Empresa e Cargo
+        VagaEntity vaga = vagaService.buscarPorEmpresaECargo(vagaRequest.empresa(),vagaRequest.cargo());
 
-        validarCandidaturaExistente(usuario, vaga);
+        // Valida se o candidato já está na vaga
+        candidaturaService.validarCandidaturaExistente(usuario, vaga);
 
         CandidaturaEntity candidatura = CandidaturaEntity.builder()
                 .usuario(usuario)
@@ -63,29 +63,16 @@ public class UsuarioService {
 
         return usuarioRepository.findByEmail(email)
                 .orElseThrow(() ->
-                        new NotFoundException("Usuário de e-mail: " + email + " não encontrado"));
+                        new RegraNegocioException("Usuário de e-mail: " + email + " não encontrado"));
     }
 
     private void validarEmailExistente(String email) {
 
         if (usuarioRepository.existsByEmail(email)) {
-            throw new RuntimeException(
+            throw new RegraNegocioException(
                     "E-mail já cadastrado");
         }
     }
 
-    private void validarCandidaturaExistente(
-            UsuarioEntity usuario,
-            VagaEntity vaga) {
 
-        boolean jaCandidatado =
-                candidaturaRepository.existsByUsuarioAndVaga(
-                        usuario,
-                        vaga);
-
-        if (jaCandidatado) {
-            throw new RuntimeException(
-                    "Usuário já se candidatou para esta vaga");
-        }
-    }
 }
