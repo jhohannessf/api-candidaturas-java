@@ -1,21 +1,18 @@
 package br.com.jhohannesfreitas.candidaturas.service;
 
-import br.com.jhohannesfreitas.candidaturas.domain.enums.StatusCandidaturaEnum;
-import br.com.jhohannesfreitas.candidaturas.domain.model.CandidaturaEntity;
 import br.com.jhohannesfreitas.candidaturas.domain.model.UsuarioEntity;
-import br.com.jhohannesfreitas.candidaturas.domain.model.VagaEntity;
+import br.com.jhohannesfreitas.candidaturas.dto.UsuarioRequest;
 import br.com.jhohannesfreitas.candidaturas.dto.UsuarioResponse;
-import br.com.jhohannesfreitas.candidaturas.dto.VagaRequest;
 import br.com.jhohannesfreitas.candidaturas.exception.RegraNegocioException;
 import br.com.jhohannesfreitas.candidaturas.mapper.UsuarioMapper;
 import br.com.jhohannesfreitas.candidaturas.repository.ICandidaturaRepository;
 import br.com.jhohannesfreitas.candidaturas.repository.IUsuarioRepository;
 import br.com.jhohannesfreitas.candidaturas.repository.IVagaRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -35,30 +32,27 @@ public class UsuarioService {
 
     private final CandidaturaService candidaturaService;
 
-    @Transactional
-    public UsuarioResponse inscreverUsuarioEmVaga(VagaRequest vagaRequest) {
 
-        // Buscar por usuário autenticado logado
-        UsuarioEntity usuario = authenticationService.getUsuarioAutenticado();
+    public UsuarioResponse alterarCadastro(Long id, UsuarioRequest usuarioRequest) {
+        UsuarioEntity usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado"));
 
-        // Busca a vaga pela Empresa e Cargo
-        VagaEntity vaga = vagaService.buscarPorEmpresaECargo(vagaRequest.empresa(),vagaRequest.cargo());
+        UsuarioEntity usuarioLogado = authenticationService.getUsuarioAutenticado();
 
-        // Valida se o candidato já está na vaga
-        candidaturaService.validarCandidaturaExistente(usuario, vaga);
+        if (!usuarioLogado.getId().equals(usuario.getId())) {
+            throw new AccessDeniedException("Não é possível alterar dados de outro usuário.");
+        }
 
-        CandidaturaEntity candidatura = CandidaturaEntity.builder()
-                .usuario(usuario)
-                .vaga(vaga)
-                .status(StatusCandidaturaEnum.APLICADO)
-                .dataAplicacao(LocalDate.now())
-                .build();
+        usuario.setNome(usuarioRequest.nome());
+        usuario.setEmail(usuarioRequest.email());
+        usuario.setSenha(usuarioRequest.senha());
 
-        candidaturaRepository.save(candidatura);
+        usuarioRepository.save(usuario);
 
         return usuarioMapper.toResponse(usuario);
     }
 
+    // Sem uso por enquanto
     private UsuarioEntity buscarUsuarioPorEmail(String email) {
 
         return usuarioRepository.findByEmail(email)
@@ -66,6 +60,7 @@ public class UsuarioService {
                         new RegraNegocioException("Usuário de e-mail: " + email + " não encontrado"));
     }
 
+    // Sem uso por enquanto
     private void validarEmailExistente(String email) {
 
         if (usuarioRepository.existsByEmail(email)) {
@@ -73,6 +68,4 @@ public class UsuarioService {
                     "E-mail já cadastrado");
         }
     }
-
-
 }

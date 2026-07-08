@@ -14,8 +14,8 @@ public record VagaRequest(
         @NotBlank
         String descricaoVaga,
         @Enumerated(EnumType.STRING)
-    StatusCandidaturaEnum status
-){
+        StatusCandidaturaEnum status
+) {
 
     // Mapper de entrada: Transforma uma DTO em uma Entidade
     public VagaEntity toEntity() {

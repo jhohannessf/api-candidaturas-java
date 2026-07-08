@@ -5,7 +5,6 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 public record UsuarioRequest (
-        Long id,
         @NotBlank(message = "nome obrigatório")
         String nome,
         @NotBlank(message = "E-mail obrigatório")
@@ -24,7 +23,6 @@ public record UsuarioRequest (
     }
 
     public void preencher(UsuarioEntity usuario) {
-        usuario.setId(id);
         usuario.setNome(nome);
         usuario.setEmail(email);
         usuario.setSenha(senha);

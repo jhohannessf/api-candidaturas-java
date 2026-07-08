@@ -1,15 +1,15 @@
 package br.com.jhohannesfreitas.candidaturas.service;
 
 import br.com.jhohannesfreitas.candidaturas.domain.enums.StatusCandidaturaEnum;
-import br.com.jhohannesfreitas.candidaturas.dto.AlterarStatusCandidaturaRequest;
-import br.com.jhohannesfreitas.candidaturas.dto.CandidaturaRequest;
-import br.com.jhohannesfreitas.candidaturas.dto.CandidaturaResponse;
-import br.com.jhohannesfreitas.candidaturas.dto.VagaResponse;
 import br.com.jhohannesfreitas.candidaturas.domain.model.CandidaturaEntity;
 import br.com.jhohannesfreitas.candidaturas.domain.model.UsuarioEntity;
 import br.com.jhohannesfreitas.candidaturas.domain.model.VagaEntity;
+import br.com.jhohannesfreitas.candidaturas.dto.AlterarStatusCandidaturaRequest;
+import br.com.jhohannesfreitas.candidaturas.dto.CandidaturaResponse;
+import br.com.jhohannesfreitas.candidaturas.dto.VagaRequest;
 import br.com.jhohannesfreitas.candidaturas.exception.RegraNegocioException;
 import br.com.jhohannesfreitas.candidaturas.mapper.CandidaturaMapper;
+import br.com.jhohannesfreitas.candidaturas.mapper.UsuarioMapper;
 import br.com.jhohannesfreitas.candidaturas.repository.ICandidaturaRepository;
 import br.com.jhohannesfreitas.candidaturas.repository.IUsuarioRepository;
 import br.com.jhohannesfreitas.candidaturas.repository.IVagaRepository;
@@ -19,6 +19,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -30,7 +31,9 @@ public class CandidaturaService {
     private final IVagaRepository vagaRepository;
 
     private final CandidaturaMapper candidaturaMapper;
+    private final UsuarioMapper usuarioMapper;
     private final AuthenticationService authenticationService;
+    private final VagaService vagaService;
 
     public List<CandidaturaResponse> obterCandidaturasPorEmail(String email) {
 
@@ -98,6 +101,31 @@ public class CandidaturaService {
         }
     }
 
+    // Definindo quem pode ver as candidaturas a nível de método
+    //@PreAuthorize("#usuarioId == authentication.principal.id or hasRole('ADMIN')")
+    @Transactional
+    public CandidaturaResponse candidatar(VagaRequest vagaRequest) {
 
+        // Buscar por usuário autenticado logado
+        UsuarioEntity usuario = authenticationService.getUsuarioAutenticado();
+
+        // Busca a vaga pela Empresa e Cargo
+        VagaEntity vaga = vagaService.buscarPorEmpresaECargo(vagaRequest.empresa(), vagaRequest.cargo());
+
+        // Valida se o candidato já está na vaga
+        validarCandidaturaExistente(usuario, vaga);
+
+        CandidaturaEntity candidatura = CandidaturaEntity.builder()
+                .usuario(usuario)
+                .vaga(vaga)
+                .status(StatusCandidaturaEnum.APLICADO)
+                .dataAplicacao(LocalDate.now())
+                .build();
+
+        candidaturaRepository.save(candidatura);
+
+        return candidaturaMapper.toResponse(candidatura);
+    }
 }
+
 

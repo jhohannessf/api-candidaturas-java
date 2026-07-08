@@ -1,10 +1,7 @@
 package br.com.jhohannesfreitas.candidaturas.controller;
 
 import br.com.jhohannesfreitas.candidaturas.domain.enums.StatusCandidaturaEnum;
-import br.com.jhohannesfreitas.candidaturas.dto.AlterarStatusCandidaturaRequest;
-import br.com.jhohannesfreitas.candidaturas.dto.CandidaturaRequest;
-import br.com.jhohannesfreitas.candidaturas.dto.CandidaturaResponse;
-import br.com.jhohannesfreitas.candidaturas.dto.VagaResponse;
+import br.com.jhohannesfreitas.candidaturas.dto.*;
 import br.com.jhohannesfreitas.candidaturas.domain.model.UsuarioEntity;
 import br.com.jhohannesfreitas.candidaturas.service.CandidaturaService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,12 +32,17 @@ public class CandidaturaController {
 
     @GetMapping("/{status}")
     public ResponseEntity<List<CandidaturaResponse>> listarPorStatus(@PathVariable StatusCandidaturaEnum status) {
-        return ResponseEntity.ok(candidaturaService.obterCandidaturasPorStatus(status));
+        return ResponseEntity.status(HttpStatus.OK).body(candidaturaService.obterCandidaturasPorStatus(status));
+    }
+
+    @PostMapping("/candidatar")
+    public ResponseEntity<CandidaturaResponse> candidatar(@RequestBody VagaRequest vaga){
+        return ResponseEntity.status(HttpStatus.CREATED).body(candidaturaService.candidatar(vaga));
     }
 
     @PatchMapping
     public ResponseEntity<CandidaturaResponse> alterarStatus(@RequestBody AlterarStatusCandidaturaRequest alterarStatusCandidaturaRequest, Authentication authentication) {
-        return ResponseEntity.ok(candidaturaService.alterarStatusCandidatura(alterarStatusCandidaturaRequest, authentication));
+        return ResponseEntity.status(HttpStatus.OK).body(candidaturaService.alterarStatusCandidatura(alterarStatusCandidaturaRequest, authentication));
     }
 }
 

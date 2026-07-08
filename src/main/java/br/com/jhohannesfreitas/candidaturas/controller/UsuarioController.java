@@ -1,14 +1,13 @@
 package br.com.jhohannesfreitas.candidaturas.controller;
 
-import br.com.jhohannesfreitas.candidaturas.dto.InscricaoRequest;
+import br.com.jhohannesfreitas.candidaturas.dto.UsuarioRequest;
 import br.com.jhohannesfreitas.candidaturas.dto.UsuarioResponse;
-import br.com.jhohannesfreitas.candidaturas.domain.model.UsuarioEntity;
 import br.com.jhohannesfreitas.candidaturas.service.UsuarioService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,11 +20,9 @@ public class UsuarioController {
 
     // Definindo quem pode ver as candidaturas a nível de método
     //@PreAuthorize("#usuarioId == authentication.principal.id or hasRole('ADMIN')")
-    @PostMapping("/inscrever")
-    public ResponseEntity<UsuarioResponse> inscreverUsuarioEmVaga(@Valid @RequestBody InscricaoRequest dto, Authentication authentication) {
-        UsuarioResponse response = usuarioService.inscreverUsuarioEmVaga(
-                dto.vaga());
-        return ResponseEntity.ok(response);
+    @PutMapping("/{id}")
+    public ResponseEntity<UsuarioResponse> inscreverUsuarioEmVaga(@PathVariable Long id, @RequestBody @Valid UsuarioRequest usuarioRequest) {
+        return ResponseEntity.status(HttpStatus.OK).body(usuarioService.alterarCadastro(id, usuarioRequest));
     }
 
 }
